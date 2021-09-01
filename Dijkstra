@@ -1,0 +1,52 @@
+#include <iostream>
+using namespace std;
+#include<bits/stdc++.h>
+int main()
+{
+  int n, m, source;
+  cin >> n >> m;
+  vector<pair<int, int>> adj[n+1];
+  int node, nextnode, dist;
+  for(int i = 0; i < m; i++)
+  {
+    cin >> node >> nextnode >> dist;
+    adj[node].push_back({nextnode, dist});
+    adj[nextnode].push_back({node, dist});
+  }
+  cin >> source;
+  vector<int> distTo(n+1, INT_MAX);
+  priority_queue< pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+  distTo[source] = 0; //Source to source distance is 0
+  pq.push({source, 0}); //Node, distance type
+  while(!pq.empty())
+  {
+    auto curr = pq.top(); pq.pop();
+    int node = curr.first;
+    int dist = curr.second;
+    for(auto it : adj[node])
+    {
+      auto nextNode = it.first;
+      auto nextDist = it.second;
+      if(distTo[nextNode]>distTo[node]+nextDist)
+      {
+        distTo[nextNode] = distTo[node] + nextDist;
+        pq.push({nextNode, distTo[nextNode]});
+      }
+    }
+  }
+  for(int i = 1; i <= n; i++)
+  {
+    cout << source << " " << i << " " << distTo[i] << endl;
+  }
+}
+/*
+5
+6
+1 2 2 
+1 4 1
+4 3 3
+2 3 4
+2 5 5
+3 5 1
+1
+*/
