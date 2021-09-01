@@ -1,0 +1,54 @@
+class Solution {
+public:
+    string alienOrder(vector<string>& words) {
+//The words given are sorted lexicographically, so we make use of that to solve this problem
+//         This is a variation of Topological sorting
+//         If there are multiple nodes with 0 as indegree, we can take any one of them and start our processing from there
+        vector<int> indegree(26, -1);
+        unordered_set<int> s;
+        vector<vector<int>> edges(26, vector<int>()); //Adjacenecy list for each letter in the alien dict
+        for (auto const&word : words) //For every word in words
+        {
+            for (auto const&ch : word) // For every character of word
+            {
+                indegree[ch - 'a'] = 0; //The node exists in the graph
+                s.insert(ch - 'a'); // Used later to ensure that the answer is of the number of unique chars in the string
+            }
+        }
+        for (int i = 0; i < words.size() - 1; i++)
+        {
+            for (int j = 0; j < words[i].size(); j++)
+            {
+                 if (j == words[i + 1].size()) //if the current index == next words size return "" because same prefix, greater len
+                    return "";
+                //Test example, abcd, abce
+                //abc is common prefix, d comes before e
+                if (words[i][j] != words[i+1][j]) //There exists an edge
+                {
+                    indegree[words[i+1][j] - 'a']++; // d++
+                    edges[words[i][j] - 'a'].push_back(words[i+1][j] - 'a'); //e->d
+                    break;
+                }
+            }
+        }
+        queue<int> q;
+        for (int i = 0; i < 26; i++)
+        {
+            if (indegree[i] == 0) // 
+                q.push(i);
+        }
+        string result = "";
+        while (!q.empty())
+        {
+            int curr = q.front();
+            q.pop();
+            result += (curr + 'a');
+            for (auto const&edge : edges[curr])
+            {
+                if (--indegree[edge] == 0)
+                    q.push(edge);
+            }
+        }
+        return s.size() == result.size() ? result : "";
+    }
+};
