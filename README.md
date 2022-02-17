@@ -28,8 +28,6 @@ curl -X 'POST' \
   "text": "Hey Sri,  TBH now isn't a great time to chat about this type of software. Full disclosure, I am pretty fresh into a contract with SalesLoft and dont have any additional budget or bandwidth to add to the sales stack right now.  That said, I very much appreciate your emails and style of outreach."
 }'
 ```
-- Mail classification:
-```
 - Information extraction:
 ```
 {
