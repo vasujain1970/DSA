@@ -4,7 +4,7 @@
 
 - Contains the code for the objection handling feature.
 - Includes, 
-    - **Information extraction:** an NER model that extract relevant objections such as Budget, Information, Internal, Interested, Not Interested, Timing, Competitor, Authority.  
+    - **Information extraction:** a regex model that extract relevant objections such as Budget, Information, Internal, Interested, Not Interested, Timing, Competitor, Authority.  
 
 ## Prerequisites
 
@@ -16,6 +16,11 @@
 - To run the complete project, run the following command: `python api.py`
 - Once you have started the API app, you can also acess the swagger at `http://localhost:8000/docs/`
 
+## Endpoints
+- `/objection_handling/health/status`: endpoint to check status
+- `/objection_handling/get_current_commit_id`: endpoint to get current commit id
+- `/objection_handling/get_objections`: endpoint to get objections
+
 ## Input/Output structure
 
 - Both modules take mail body (text) as input and return a JSON object. One sample input is, `(curl)`
@@ -25,20 +30,40 @@ curl -X 'POST' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
-  "text": "Hey Sri,  TBH now isn't a great time to chat about this type of software. Full disclosure, I am pretty fresh into a contract with SalesLoft and dont have any additional budget or bandwidth to add to the sales stack right now.  That said, I very much appreciate your emails and style of outreach."
+  "text": "Hi Vamsi - appreciate the prep in your email. At the moment we're using outreach for our outbound engagement. I'm quite tight on time at the minute and not keen to put something in the calendar, but if you want to send me over why outplay would be a step up for us, I'm happy to take a look and come back to you if we're interested in exploring further. Thanks, Clay"
 }'
 ```
-- Information extraction:
+- Objection extraction:
 ```
 {
   "status": "Success",
   "message": "Code ran successfully",
-  "result": {
-    "Competitor": ["I am pretty fresh into a contract with SalesLoft"],
-	"Budget": ["dont have any additional budget or bandwidth to add to the sales stack right now"]
+  "result": "result": {
+    "objections": [
+      {
+        "class": "Interested",
+        "evidence": " if we're interested",
+        "action": "",
+        "answer": "",
+        "evidence_start_index": 311,
+        "evidence_end_index": 331
+      },
+      {
+        "class": "Competitor",
+        "evidence": "we're using outreach for ",
+        "action": "",
+        "answer": "",
+        "evidence_start_index": 60,
+        "evidence_end_index": 85
+      }
+    ]
   }
 }
 ```
+## Status Codes
+- `Success [200]`: returns successful execution of api request
+- `Warning [400]`: returns partially valid results
+- `Failure [500]`: returns catched exceptions
 
 ## Project structure
 
@@ -57,19 +82,10 @@ curl -X 'POST' \
 └── .gitignore
 ```
 
-- Inside the code folder we have following structure 
-
-```
-├── data_prepration.py      # conversion to required .jsonl format
-├── data_validation.py      # validation of dataset for fine-tuning
-├── fine_tuning.py          # fine-tune the latest model
-└── helper.py               # contains helper modules for Mail Writer APIs
-```
-
 ## Model changelog
 
 - Objection Handling:
-    - `v1`: SpaCy model trained on 705 examples
+    - `v1`: Regex based system.
   
 ## Contact
-- For any code related queries, please contact Mohit Mayank (mohit.m@outplayhq.com).
+- For any code related queries, please contact Bandi Saideva(bandi.s@outplayhq.com), Vasu Jain (vasu.j@outplayhq.com) and/or Mohit Mayank (mohit.m@outplayhq.com).
